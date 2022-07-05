@@ -1,44 +1,50 @@
-import {useRef, useState} from 'react';
+import { useRef, useState } from 'react';
 
-const SimpleInput = (props) => {
-    const [enteredName, setEnteredName] = useState('');
- const nameInputRef = useRef();
-    const nameInputChangeHandler = (event) => {
-setEnteredName(event.target.value);
-    };
+const SimpleInput = ( props ) => {
+	const [ enteredName, setEnteredName ] = useState('');
+	const nameInputRef = useRef();
+    const [enteredNameIsValid,setEnteredNameIsValid] = useState(true);
 
-    const formSubmissionHandler = (event) => {
-        event.preventDefault();
+	const nameInputChangeHandler = ( event ) => {
+		setEnteredName(event.target.value);
+	};
 
-        if(enteredName.trim() == '') {
-            return;
-        }
+	const formSubmissionHandler = ( event ) => {
+		event.preventDefault();
 
-        console.log(enteredName);
-        const enteredValue = nameInputRef.current.value;
-        console.log(enteredValue);
+		if (enteredName.trim() === '') {
+            setEnteredNameIsValid(false);
+			return;
+		}
+        setEnteredNameIsValid(true);
 
-        setEnteredName('');
-    };
+		console.log(enteredName);
+		const enteredValue = nameInputRef.current.value;
+		console.log(enteredValue);
 
+		setEnteredName('');
+	};
 
-  return (
-    <form onSubmit={formSubmissionHandler}>
-      <div className='form-control'>
-        <label htmlFor='name'>Your Name</label>
-        <input
-            ref={nameInputRef}
-            type='text'
-            id='name'
-            onChange={nameInputChangeHandler}
-            value={enteredName}
-        />
-      </div>
-      <div className="form-actions">
-        <button>Submit</button>
-      </div>
-    </form>
-  );
+    const nameInputClasses = enteredNameIsValid ? 'form-control' : 'form-control invalid';
+
+	return (
+		<form onSubmit={ formSubmissionHandler }>
+			<div className={nameInputClasses}>
+				<label htmlFor="name">Your Name</label>
+				<input
+					ref={ nameInputRef }
+					type="text"
+					id="name"
+					onChange={ nameInputChangeHandler }
+					value={ enteredName }
+				/>
+                {!enteredNameIsValid && <p className="error-text">Name must not be empty.</p>}
+			</div>
+			<div className="form-actions">
+				<button>Submit</button>
+			</div>
+		</form>
+	);
 };
 
 export default SimpleInput;
